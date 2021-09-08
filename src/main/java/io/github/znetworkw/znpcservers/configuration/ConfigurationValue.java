@@ -26,6 +26,7 @@ public enum ConfigurationValue {
     NAMING_METHOD("config", NamingType.DEFAULT, NamingType.class),
     LINE_SPACING("config", 0.3, Double.class),
     ANIMATION_RGB("config", false, Boolean.class), // RGB Animation on npc lines...
+    INTERACTION_LATENCY_MILLISECONDS("config", 1000L, Long.class), // latency between each NPC interaction.
     /** messages */
     NO_PERMISSION("messages", "&cYou do not have permission to execute this command.", String.class),
     SUCCESS("messages", "&aDone...", String.class),

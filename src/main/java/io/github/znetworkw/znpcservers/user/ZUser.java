@@ -1,13 +1,14 @@
 package io.github.znetworkw.znpcservers.user;
 
 import io.github.znetworkw.znpcservers.ServersNPC;
+import io.github.znetworkw.znpcservers.configuration.Configuration;
+import io.github.znetworkw.znpcservers.configuration.ConfigurationValue;
 import io.github.znetworkw.znpcservers.npc.NPCAction;
 import io.github.znetworkw.znpcservers.npc.event.NPCInteractEvent;
 import io.github.znetworkw.znpcservers.npc.event.ClickType;
 import io.github.znetworkw.znpcservers.npc.NPC;
 import io.github.znetworkw.znpcservers.cache.CacheRegistry;
 
-import io.github.znetworkw.znpcservers.utility.Utils;
 import com.mojang.authlib.GameProfile;
 
 import io.netty.channel.Channel;
@@ -19,6 +20,7 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Represents a user.
@@ -27,7 +29,7 @@ public class ZUser {
     /** The name of the NPC interact channel. */
     private static final String CHANNEL_NAME = "npc_interact";
     /** The default wait time between each npc interact. */
-    private static final int DEFAULT_DELAY = 1;
+    private static final long INTERACTION_LATENCY_NANOSECONDS = TimeUnit.MILLISECONDS.toNanos(Configuration.CONFIGURATION.getValue(ConfigurationValue.INTERACTION_LATENCY_MILLISECONDS));
     /** A map containing the saved users. */
     private static final Map<UUID, ZUser> USER_MAP = new HashMap<>();
     /** A map for checking the last interact time for an NPC. */
@@ -175,7 +177,8 @@ public class ZUser {
             if (packet.getClass() == CacheRegistry.PACKET_PLAY_IN_USE_ENTITY_CLASS) {
                 // check for interact wait time between npc
                 long lastInteractNanos = System.nanoTime() - lastInteract;
-                if (lastInteract != 0 && lastInteractNanos < Utils.SECOND_INTERVAL_NANOS * DEFAULT_DELAY) {
+
+                if (lastInteract != 0 && lastInteractNanos < INTERACTION_LATENCY_NANOSECONDS) {
                     return;
                 }
                 int entityId = CacheRegistry.PACKET_IN_USE_ENTITY_ID_FIELD.getInt(packet);
@@ -212,7 +215,7 @@ public class ZUser {
                         }
                         npcAction.run(ZUser.this, npcAction.getAction());
                     }
-                }, DEFAULT_DELAY);
+                }, 1);
             }
         }
     }
