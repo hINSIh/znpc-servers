@@ -5,6 +5,7 @@ import io.github.znetworkw.znpcservers.commands.list.DefaultCommand;
 import io.github.znetworkw.znpcservers.configuration.Configuration;
 import io.github.znetworkw.znpcservers.listeners.InventoryListener;
 import io.github.znetworkw.znpcservers.listeners.PlayerListener;
+import io.github.znetworkw.znpcservers.listeners.WorldListener;
 import io.github.znetworkw.znpcservers.npc.NPCModel;
 import io.github.znetworkw.znpcservers.utility.BungeeUtils;
 import io.github.znetworkw.znpcservers.utility.itemstack.ItemStackSerializer;
@@ -105,6 +106,7 @@ public class ServersNPC extends JavaPlugin {
         new NPCSaveTask(this, ConfigurationConstants.SAVE_DELAY);
 
         // register listeners
+        new WorldListener(this);
         new PlayerListener(this);
         new InventoryListener(this);
     }
